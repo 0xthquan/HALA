@@ -1,13 +1,25 @@
-import { createContext, useEffect, useState } from 'react'
+import { createContext, useCallback, useEffect, useMemo, useState } from 'react'
 import './App.css'
 import Navbar from './components/Navbar/Navbar'
 import UserCard from './components/UserCard/UserCard'
 import GameSettings from './components/GameSettings/GameSettings';
 import { UserContext, type User } from './contexts/UserContext';
+import { id } from 'zod/locales';
 
 function App() {
   const [isOpenSettings, setIsOpenSettings] = useState(false);
   const [user, setUser] = useState<User[]>([]);
+
+  const handleWinAll = useCallback(() => {
+    console.log("Take all")
+  }, [])
+
+  const addPlayer = useCallback(() => {
+  }, [])
+
+  const sortedPlayers = useMemo(() => {
+    return [...user].sort((a, b) => b.score - a.score);
+  }, [user])
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -22,8 +34,8 @@ function App() {
     <>
       <UserContext.Provider value={[user, setUser]}>
         <Navbar onOpenSetting={() => setIsOpenSettings(true)} />
-        {user && user.map((user) => (
-          <UserCard key={user.id} userCard={user} />
+        {sortedPlayers.map((user) => (
+          <UserCard key={user.id} userCard={user} handleWinAll={handleWinAll} />
         ))}
         {isOpenSettings && <GameSettings closeGameSetting={() => setIsOpenSettings(false)} />}
       </UserContext.Provider>
